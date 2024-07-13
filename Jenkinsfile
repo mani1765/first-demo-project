@@ -19,24 +19,20 @@ pipeline{
             }
         }
       stage('Build Docker Image') {
+          environment {
+                    DOCKERHUB_CREDENTIALS = credentials('dockerlogin')
+            }
+
             steps {
                 script {
-                    def dockerImage = docker.build('mk:latest', '.')
+                       def dockerImage = docker.build('mk:latest', '.')
+                       docker.withRegistry('https://registry.hub.docker.com', 'dockerlogin') {
+                       dockerImage.push()
+                      }
+
                     
                 }
             }
         }
-      stage('Deploy to Docker Hub') {
-      environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerlogin')
-      }
-      steps {
-        script {
-            docker.withRegistry('https://registry.hub.docker.com', 'dockerlogin') {
-                dockerImage.push()
-            }
-        }
-    }
-}
     }
 }
