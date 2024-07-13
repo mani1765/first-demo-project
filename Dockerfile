@@ -1,5 +1,5 @@
 # Start with a base image containing Maven and JDK
-FROM maven:3.9.8-jdk-11 AS build
+FROM maven:3.8.3-openjdk-11 AS build
 
 # Set the working directory
 WORKDIR /app
