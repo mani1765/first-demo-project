@@ -21,10 +21,22 @@ pipeline{
       stage('Build Docker Image') {
             steps {
                 script {
-                    def dockerImage = docker.build('mani1765/mk:latest', '.')
-                    dockerImage.push()
+                    def dockerImage = docker.build('mk:latest', '.')
+                    
                 }
             }
         }
+      stage('Deploy to Docker Hub') {
+      environment {
+        DOCKERHUB_CREDENTIALS = credentials('dockerlogin')
+      }
+      steps {
+        script {
+            docker.withRegistry('https://registry.hub.docker.com', 'dockerlogin') {
+                dockerImage.push()
+            }
+        }
+    }
+}
     }
 }
